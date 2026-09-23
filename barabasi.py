@@ -1,29 +1,35 @@
 import networkx as nx
-import matplotlib.pyplot as plt
-from pyvis.network import Network
+import metricas as met
+
+N_LISTA = [10**2, 10**3, 10**4, 10**5]
+M = 3
 
 
-n = 100
-m = 15
+def main():
+    met.garantir_pastas()
 
-G = nx.barabasi_albert_graph(n, m)
-pos = nx.spring_layout(G)
+    for N in N_LISTA:
+        print(f"[BA] N={N} m={M}")
 
-net = Network(height="600px", width="100%", bgcolor="#222222", font_color="white")
-net.from_nx(G)
-net.show_buttons(filter_=['physics'])
-net.show("grafo_networkx_barabasi.html", notebook=False)
+        G = nx.barabasi_albert_graph(N, M)
 
-# nx.draw(
-#     G,  
-#     pos,
-#     with_labels=True,      # Mostra o nome dos nós
-#     node_color='orange',   # Cor dos nós
-#     node_size=100,         # Tamanho dos nós
-#     edge_color='gray',     # Cor das linhas
-#     font_size=12,          # Tamanho da fonte do texto
-#     font_weight='bold'     # Estilo da fonte
-# )
+        linha = met.calcular_propriedades(G, modelo="barabasi_albert", N=N, m=M)
+        met.salvar_linha_csv(linha, nome_arquivo="resultado_ba.csv")
+        met.salvar_distribuicao_graus(G, f"ba_N{N}_m{M}")
 
-# plt.title("Exemplo de Rede Barabási-Albert")
-# plt.show()
+    G_exemplo = nx.barabasi_albert_graph(60, 2)
+    met.plotar_rede_exemplo(G_exemplo, "Barabasi-Albert (exemplo)", "exemplo_ba.png", "orange")
+
+   
+    met.plotar_distribuicoes(
+        [f"ba_N{N}_m{M}" for N in N_LISTA],
+        [f"N={N}" for N in N_LISTA],
+        f"Barabasi-Albert - distribuicao de graus (m={M})",
+        f"ba_dist_m{M}.png",
+    )
+
+    print("Pronto. Tabela em", "resultado_ba.csv")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,27 +1,38 @@
 import networkx as nx
-import matplotlib.pyplot as plt
-from pyvis.network import Network
+import metricas as met
 
-n, p, k = 100, 0.2, 10
+N_LISTA = [10**2, 10**3, 10**4]
+K = 10
+P_LISTA = [0.0, 0.001, 0.01, 0.1, 0.5, 1.0]
 
-W = nx.watts_strogatz_graph(n, k, p) 
-pos = nx.spring_layout(W)
 
-net = Network(height="600px", width="100%", bgcolor="#222222", font_color="white")
-net.from_nx(W)
-net.show_buttons(filter_=['physics'])
-net.show("grafo_networkx_pyvis.html", notebook=False)
+def main():
+    met.garantir_pastas()
 
-# nx.draw(
-#     W,
-#     pos,
-#     with_labels=True,      # Mostra o nome dos nós
-#     node_color='lightgreen',  # Cor dos nós
-#     node_size=100,         # Tamanho dos nós
-#     edge_color='gray',     # Cor das linhas
-#     font_size=12,          # Tamanho da fonte do texto
-#     font_weight='bold'     # Estilo da fonte
-# )
+    for N in N_LISTA:
+        for p in P_LISTA:
+            print(f"[WS] N={N} k={K} p={p}")
 
-# plt.title("Exemplo de Rede Watts-Strogatz")
-# plt.show()
+            G = nx.watts_strogatz_graph(N, K, p)
+
+            linha = met.calcular_propriedades(G, modelo="watts_strogatz", N=N, p=p, k=K)
+            met.salvar_linha_csv(linha, nome_arquivo="resultado_ws.csv")
+            met.salvar_distribuicao_graus(G, f"ws_N{N}_k{K}_p{p}")
+
+    G_exemplo = nx.watts_strogatz_graph(60, 4, 0.1)
+    met.plotar_rede_exemplo(G_exemplo, "Watts-Strogatz (exemplo)", "exemplo_ws.png", "lightgreen")
+
+    for N in N_LISTA:
+        met.plotar_distribuicoes(
+            [f"ws_N{N}_k{K}_p{p}" for p in P_LISTA],
+            [f"p={p}" for p in P_LISTA],
+            f"Watts-Strogatz - distribuicao de graus (N={N}, k={K})",
+            f"ws_dist_N{N}.png",
+            loglog=False,   
+        )
+
+    print("Pronto. Tabela em", "resultado_ws.csv") 
+
+
+
+main()

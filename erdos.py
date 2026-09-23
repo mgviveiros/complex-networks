@@ -1,29 +1,47 @@
 import networkx as nx
-import matplotlib.pyplot as plt
-from pyvis.network import Network
-
-n = 100
-p = 0.2
-
-G = nx.erdos_renyi_graph(n, p)
-pos = nx.spring_layout(G)
-
-net = Network(height="600px", width="100%", bgcolor="#222222", font_color="white")
-net.from_nx(G)
-net.show_buttons(filter_=['physics'])
-net.show("grafo_networkx_erdos.html", notebook=False)
+import metricas as met
+import math
+N_LISTA = [10**2, 10**3, 10**4]
+REGIMES = ["subcritico", "critico", "supercritico", "conectado"]
 
 
-# nx.draw(
-#     G, 
-#     pos, 
-#     with_labels=True,      # Mostra o nome dos nós
-#     node_color='skyblue',  # Cor dos nós
-#     node_size=100,         # Tamanho dos nós
-#     edge_color='black',     # Cor das linhas
-#     font_size=12,          # Tamanho da fonte do texto
-#     font_weight='bold'     # Estilo da fonte
-# )
+def p_do_regime(N, regime):
+    """<k> = p*(N-1). Cada regime pede um valor diferente de <k>."""
+    if regime == "subcritico":
+        return 0.5 / (N - 1)
+    if regime == "critico":
+        return 1.0 / (N - 1)
+    if regime == "supercritico":
+        return 2.0 / (N - 1)
+    if regime == "conectado":
+        return 2.0 * math.log(N) / (N - 1)
 
-# plt.title("Exemplo de Rede Simples")
-# plt.show()
+
+def main():
+    met.garantir_pastas()
+
+    for N in N_LISTA:
+        for regime in REGIMES:
+            p = p_do_regime(N, regime)
+            print(f"[ER] N={N} regime={regime} p={p:.2g}")
+            G = nx.erdos_renyi_graph(N, p)
+            nome_arquivo = f"resultado_er.csv"
+            linha = met.calcular_propriedades(G, modelo="erdos_renyi", N=N, p=p, regime=regime)
+            met.salvar_linha_csv(linha, nome_arquivo)
+            met.salvar_distribuicao_graus(G, f"er_N{N}_{regime}")
+
+    
+    G_exemplo = nx.erdos_renyi_graph(60, 0.05)
+    met.plotar_rede_exemplo(G_exemplo, "Erdos-Renyi (exemplo)", "exemplo_er.png")
+
+    
+    for N in N_LISTA:
+        met.plotar_distribuicoes(
+            [f"er_N{N}_{r}" for r in REGIMES], REGIMES,
+            f"Erdos-Renyi - distribuicao de graus (N={N})",
+            f"er_dist_N{N}.png",
+        )
+
+    print("Pronto. Tabela em", nome_arquivo)
+
+main()
