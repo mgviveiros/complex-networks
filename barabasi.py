@@ -11,13 +11,13 @@ def main():
     for N in N_LISTA:
         print(f"[BA] N={N} m={M}")
 
-        G = nx.barabasi_albert_graph(N, M)
+        G = nx.barabasi_albert_graph(N, M, seed=42)
 
         linha = met.calcular_propriedades(G, modelo="barabasi_albert", N=N, m=M)
         met.salvar_linha_csv(linha, nome_arquivo="resultado_ba.csv")
         met.salvar_distribuicao_graus(G, f"ba_N{N}_m{M}")
 
-    G_exemplo = nx.barabasi_albert_graph(60, 2)
+    G_exemplo = nx.barabasi_albert_graph(60, 2, seed=42)
     met.plotar_rede_exemplo(G_exemplo, "Barabasi-Albert (exemplo)", "exemplo_ba.png", "orange")
 
    

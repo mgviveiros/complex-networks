@@ -13,13 +13,13 @@ def main():
         for p in P_LISTA:
             print(f"[WS] N={N} k={K} p={p}")
 
-            G = nx.watts_strogatz_graph(N, K, p)
+            G = nx.watts_strogatz_graph(N, K, p, seed=42)
 
             linha = met.calcular_propriedades(G, modelo="watts_strogatz", N=N, p=p, k=K)
             met.salvar_linha_csv(linha, nome_arquivo="resultado_ws.csv")
             met.salvar_distribuicao_graus(G, f"ws_N{N}_k{K}_p{p}")
 
-    G_exemplo = nx.watts_strogatz_graph(60, 4, 0.1)
+    G_exemplo = nx.watts_strogatz_graph(60, 4, 0.1, seed=42)
     met.plotar_rede_exemplo(G_exemplo, "Watts-Strogatz (exemplo)", "exemplo_ws.png", "lightgreen")
 
     for N in N_LISTA:

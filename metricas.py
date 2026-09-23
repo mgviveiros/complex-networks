@@ -18,7 +18,7 @@ COLUNAS = [
     "clustering_medio", "distancia_media", "diametro",
 ]
 
-LIMITE_DISTANCIA = 2000
+LIMITE_DISTANCIA = 10000
 
 
 def garantir_pastas():
