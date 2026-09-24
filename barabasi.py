@@ -2,7 +2,7 @@ import networkx as nx
 import metricas as met
 
 N_LISTA = [10**2, 10**3, 10**4, 10**5]
-M = 3
+M = 3 
 
 
 def main():
@@ -31,5 +31,5 @@ def main():
     print("Pronto. Tabela em", "resultado_ba.csv")
 
 
-if __name__ == "__main__":
-    main()
+
+main()

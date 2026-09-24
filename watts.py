@@ -2,7 +2,7 @@ import networkx as nx
 import metricas as met
 
 N_LISTA = [10**2, 10**3, 10**4]
-K = 10
+K = 10 
 P_LISTA = [0.0, 0.001, 0.01, 0.1, 0.5, 1.0]
 
 

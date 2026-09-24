@@ -3,7 +3,7 @@ import metricas as met
 import math
 N_LISTA = [10**2, 10**3, 10**4]
 REGIMES = ["subcritico", "critico", "supercritico", "conectado"]
-
+ 
 
 def p_do_regime(N, regime):
     """<k> = p*(N-1). Cada regime pede um valor diferente de <k>. """

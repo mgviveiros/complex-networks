@@ -7,7 +7,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-csv_saida = "resultados.csv"
+csv_saida = "resultados.csv" 
 PASTA_GRAUS = "distribuicoes"
 PASTA_FIGURAS = "figuras"
 
@@ -15,7 +15,7 @@ COLUNAS = [
     "modelo", "N", "p", "k", "m", "regime",
     "num_nos", "num_arestas", "grau_medio", "grau_min", "grau_max",
     "densidade", "frac_maior_componente", "conectado",
-    "clustering_medio", "distancia_media", "diametro",
+    "clustering", "distancia_media",
 ]
 
 LIMITE_DISTANCIA = 10000
@@ -37,9 +37,8 @@ def calcular_propriedades(G, modelo, N, p=None, k=None, m=None, regime="-"):
     GC = maior_componente(G)
     if GC.number_of_nodes() <= LIMITE_DISTANCIA:
         dist_media = nx.average_shortest_path_length(GC)
-        diametro = nx.diameter(GC)
     else:
-        dist_media, diametro = "nao_calculado", "nao_calculado"
+        dist_media = "nao_calculado"
 
     return {
         "modelo": modelo,
@@ -56,9 +55,8 @@ def calcular_propriedades(G, modelo, N, p=None, k=None, m=None, regime="-"):
         "densidade": nx.density(G),
         "frac_maior_componente": GC.number_of_nodes() / G.number_of_nodes(),
         "conectado": nx.is_connected(G),
-        "clustering_medio": nx.average_clustering(G),
+        "clustering": nx.average_clustering(G),
         "distancia_media": dist_media,
-        "diametro": diametro,
     }
 
 
